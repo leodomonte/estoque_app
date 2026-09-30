@@ -74,11 +74,18 @@ class _ValidadesPageState extends State<ValidadesPage> {
 
     for (var i = 0; i < proximos.length; i++) {
       final (produto, lote) = proximos[i];
+      final diasParaVencer = _dataSemHora(lote.validade)
+          .difference(hoje)
+          .inDays;
+      final unidadeDias = diasParaVencer == 1 ? 'dia' : 'dias';
       texto
         ..writeln('${i + 1}. ${produto.nome}')
         ..writeln('   Código: ${produto.codigo}')
         ..writeln('   Lote: ${lote.numero}')
-        ..writeln('   Validade: ${_formatarData(lote.validade)}')
+        ..writeln(
+          '   Validade: ${_formatarData(lote.validade)} '
+          '($diasParaVencer $unidadeDias para vencer)',
+        )
         ..writeln('   Quantidade: ${lote.quantidade} un.')
         ..writeln('');
     }
@@ -175,8 +182,11 @@ class _ValidadesPageState extends State<ValidadesPage> {
             cor = Colors.red;
             mensagem = 'VENCIDO';
           } else if (diferenca <= 90) {
+            cor = Colors.yellow;
+            mensagem = 'Próximo do vencimento: 90 D';
+          } else if (diferenca <= 30) {
             cor = Colors.orange;
-            mensagem = 'Próximo do vencimento';
+            mensagem = 'Próximo do vencimento: 30 D';
           } else {
             cor = Colors.green;
             mensagem = 'Dentro da validade';
@@ -186,6 +196,7 @@ class _ValidadesPageState extends State<ValidadesPage> {
               '${lote.validade.day.toString().padLeft(2, '0')}/'
               '${lote.validade.month.toString().padLeft(2, '0')}/'
               '${lote.validade.year}';
+          final unidadeDias = diferenca == 1 ? 'dia' : 'dias';
 
           return Card(
             child: ListTile(
@@ -198,7 +209,7 @@ class _ValidadesPageState extends State<ValidadesPage> {
               subtitle: Text(
                 'Código: ${produto.codigo}\n'
                 'Lote: ${lote.numero}\n'
-                'Validade: $data\n'
+                'Validade: $data ($diferenca $unidadeDias para vencer)\n'
                 '$mensagem',
                 style: TextStyle(color: cor),
               ),

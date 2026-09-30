@@ -162,9 +162,9 @@ class _DetalhesProdutoPageState extends State<DetalhesProdutoPage> {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
 
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton.icon(
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
                   onPressed: _adicionarLote,
                   icon: const Icon(Icons.add),
                   label: const Text('Adicionar lote'),
@@ -186,9 +186,12 @@ class _DetalhesProdutoPageState extends State<DetalhesProdutoPage> {
                     if (lote.validade.isBefore(hoje)) {
                       cor = Colors.red;
                       mensagem = 'VENCIDO';
+                    } else if (diferenca <= 90) {
+                      cor = Colors.yellow;
+                      mensagem = 'Próximo do vencimento: 90 D';
                     } else if (diferenca <= 30) {
                       cor = Colors.orange;
-                      mensagem = 'Próximo do vencimento';
+                      mensagem = 'Próximo do vencimento: 30 D';
                     } else {
                       cor = Colors.green;
                       mensagem = 'Dentro da validade';
